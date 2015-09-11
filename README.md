@@ -1,2 +1,2 @@
-# Project-Backtracking
-Backtracking based advanced algorithms project
+# Graphs
+Repository of abstract data structures and algorithms in graphs.
