@@ -1,30 +1,21 @@
-#ifndef _graphList_H_
-#define _graphList_H_
+#ifndef _graph_H_
+#define _graph_H_
+#include "list.h"
 
-#include "graph.h"
-#include "graphList.h"
+typedef struct graph {
 
-ListGraph* createListGraph(int, int, int);
-int addVertexListGraph(ListGraph *);
-int printListGraph(ListGraph *);
-int addEdgeListGraph(ListGraph*, int, int, int);
-int printAdjListGraph(ListGraph *, int);
-int removeEdgeListGraph(ListGraph*, int, int);
-void freeListGraph(ListGraph **);
-int getLighterEdgeListGraph(ListGraph *);
+	List **vector;
+	int size;
+	int is_digraph;
 
-ListGraph* getTransposedListGraph(ListGraph *);
-int breadthFirstSearchListGraph(ListGraph *, int, int);
-int depthFirstSearchListGraph(ListGraph *, int, int, BYTE, ProcessDFS, int *);
+} Graph;
 
-MatrixGraph *toMatrix(ListGraph *);
-
-int topologicalOrdenationListGraph(ListGraph *, int *);
-
-ListGraph *kruskalMSTListGraph(ListGraph *);
-ListGraph *primMSTListGraph(ListGraph *);
-int printSumListGraph(ListGraph *);
-int dijkstraShortestPathListGraph(ListGraph *, int, int);
+Graph* createGraph(int, int, int);
+int addVertex(Graph *);
+int printGraph(Graph *);
+int addEdge(Graph*, int, int, int);
+int removeEdge(Graph*, int, int);
+void freeGraph(Graph **);
 
 #endif
 

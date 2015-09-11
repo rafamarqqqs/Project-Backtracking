@@ -1,7 +1,6 @@
 #ifndef _list_H_
 #define _list_H_
 
-
 typedef struct listnode ListNode;
 
 struct listnode{
@@ -22,9 +21,6 @@ int addListNode(List *, int, int, int, Compare);
 int removeListNode(List *, int);
 void freeList(List **);
 int printList(List *);
-int getSmaller(List *);
 int searchNode(List *, int);
-
-int compareMST(ListNode*, int, int, int);
 
 #endif

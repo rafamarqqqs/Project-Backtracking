@@ -24,10 +24,6 @@ int compareDestinationVertex(ListNode *node, int src, int dest, int weight){
 	return node -> dest < dest;
 }
 
-int compareMST(ListNode *node, int src, int dest, int weight){	//menor igual para manter a ordem de entrada
-	return node -> weight <= weight;
-}
-
 int addListNode(List *list, int src, int dest, int weight, Compare compare){
 	if(!list)
 		return -1;
@@ -118,21 +114,4 @@ int searchNode(List *list, int id){
 		current = current -> next;
 
 	return current == NULL ? -2 : current -> weight;
-}
-
-int getSmaller(List *list){
-	if(!list)
-		return -1;
-
-	ListNode *current = list -> head -> next;
-	int smaller = -2;
-
-	while(current){
-		if(current -> weight < smaller || smaller == -2)
-			smaller = current -> weight;
-
-		current = current -> next;
-	}
-
-	return smaller;
 }
