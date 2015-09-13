@@ -55,15 +55,15 @@ int printGraph(Graph *graph){
 	int i;
 
 	for(i = 0; i < graph -> size; i++){
-	    	printf("%d.", i);
-	    	printList(graph -> vector[i]);
+	    printf("%d.", i);
+	    printList(graph -> vector[i]);
 	}
 
 	return 1;
 }
 
 void freeGraph(Graph **graph){
-	if(!(*graph))
+	if(!graph || !(*graph))
 		return;
 	
 	int i;
