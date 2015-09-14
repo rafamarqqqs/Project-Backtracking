@@ -10,11 +10,11 @@
 //backtracking tem muita operação de colocar valor em aresta e acessar vertices e arestas
 //e a implentação de matriz é mais rápida nesse quesit
 
-void printVector(int *vector, int n){
+void printVector(int *vector, Map *map, int n){
 	int i;
 
 	for(i = 0; i < n; i++){
-		printf("%d: %s\n", i, PICK_COLOR(vector[i]));
+		printf("%s: %s\n", map -> states[i] -> name, PICK_COLOR(vector[i]));
 	}
 }
 
@@ -59,7 +59,7 @@ int main(int argc, char *argv[]){
 	backtracking(graph, &vector);
 	end = clock();
 
-	printVector(vector, graph -> size);
+	printVector(vector, map, graph -> size);
 
 	printf("Time consumed: %lf\n", (double) (end - start)/CLOCKS_PER_SEC);
 

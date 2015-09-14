@@ -3,14 +3,14 @@
 
 #include "graph.h"
 
-#define RED 0
-#define BLUE 1
-#define GREEN 2
-#define YELLOW 3
+#define VERMELHO 0
+#define AZUL 1
+#define VERDE 2
+#define AMARELO 3
 #define COLORS 4
 
-#define PICK_COLOR(color) ((color == RED ? "RED" : \
-(color == BLUE ? "BLUE" : (color == GREEN ? "GREEN" : (color == YELLOW ? "YELLOW" : "UNASSIGNED")))))\
+#define PICK_COLOR(color) ((color == VERMELHO ? "VERMELHO" : \
+(color == AZUL ? "AZUL" : (color == VERDE ? "VERDE" : (color == AMARELO ? "AMARELO" : "UNASSIGNED")))))\
 
 int backtracking(Graph *, int **);
 
