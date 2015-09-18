@@ -3,6 +3,9 @@
 
 #include "graph.h"
 
+#define TRUE 1
+#define FALSE 0
+
 #define VERMELHO 0
 #define AZUL 1
 #define VERDE 2
@@ -12,7 +15,13 @@
 #define STANDARD 0
 #define FORWARD_CHECKING 1
 #define MRV 2
-#define GRAU 3
+#define ORDER 3
+
+typedef struct possibilities {
+	int *colors;
+	int size;
+	int index;
+} Possibilities;
  
 typedef unsigned int HEURISTIC;
 
