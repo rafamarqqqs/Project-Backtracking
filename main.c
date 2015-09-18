@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
 	printGraph(graph);
 
 	start = clock();
-	backtracking(graph, &vector);
+	backtracking(graph, &vector, FORWARD_CHECKING);
 	end = clock();
 
 	printVector(vector, map, graph -> size);

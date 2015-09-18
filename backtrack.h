@@ -9,9 +9,16 @@
 #define AMARELO 3
 #define COLORS 4
 
+#define STANDARD 0
+#define FORWARD_CHECKING 1
+#define MRV 2
+#define GRAU 3
+ 
+typedef unsigned int HEURISTIC;
+
 #define PICK_COLOR(color) ((color == VERMELHO ? "VERMELHO" : \
 (color == AZUL ? "AZUL" : (color == VERDE ? "VERDE" : (color == AMARELO ? "AMARELO" : "UNASSIGNED")))))\
 
-int backtracking(Graph *, int **);
+int backtracking(Graph *, int **, HEURISTIC flag);
 
 #endif
