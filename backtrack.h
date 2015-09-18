@@ -20,7 +20,7 @@
 typedef struct possibilities {
 	int *colors;
 	int size;
-	int index;
+	int *restrictions;
 } Possibilities;
  
 typedef unsigned int HEURISTIC;
