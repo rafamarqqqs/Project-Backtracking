@@ -86,6 +86,7 @@ void freePossibilities(Possibilities *p, int size){
 		free(p[i].colors);
 		free(p[i].restrictions);
 	}
+	
 	free(p);
 }
 

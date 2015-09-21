@@ -48,8 +48,10 @@ void readAdjacents(State *state, int n){
 		}
 	}
 
-	state -> adjacents[state -> size][size - 1] = '\0';
-	state -> size++;
+	if(size != 1){
+		state -> adjacents[state -> size][size - 1] = '\0';
+		state -> size++;
+	}
 	//reads the '\n'
 	getchar();
 }
