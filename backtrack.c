@@ -16,22 +16,33 @@ int assignmentComplete(int *vector, int n){
 }
 
 //compare function to compare the possibilities struct
-int comparePossibilities(const void *a, const void *b){
+int compareMRV(const void *a, const void *b){
 	Possibilities *x = (Possibilities *) a;
 	Possibilities *y = (Possibilities *) b;
 	return x -> size - y -> size;
 }
-/*
+
+int compareOrder(const void *a, const void *b){
+	Possibilities *x = (Possibilities *) a;
+	Possibilities *y = (Possibilities *) b;
+	return x -> size - y -> size == 0 ? y -> degree - x -> degree : x -> size - y -> size;
+}
+
 //minimum remaining values heuristic
-int minimumRemainingValues(int *vector, int n, Possibilities *p){
+int minimumRemainingValues(Graph *graph, int *vector, int n, Possibilities *p, HEURISTIC flag){
 	Possibilities *aux = (Possibilities *) malloc(sizeof(Possibilities) * n);
 	int index;
 	int i;
-	printf("MRV...\n");
+	int (*compare)(const void *, const void *) = &compareMRV;
 
 	//copy all data from p to aux and sort it
 	memcpy(aux, p, sizeof(Possibilities) * n);
-	qsort(aux, n, sizeof(Possibilities), comparePossibilities);
+
+	//if using order to determinate to choose between equal possibilities states
+	if(flag >= ORDER)
+		compare = &compareOrder;
+
+	qsort(aux, n, sizeof(Possibilities), compare);
 
 	//get the index of the first unassigned state
 	for(i = 0; i < n; i++){
@@ -45,14 +56,14 @@ int minimumRemainingValues(int *vector, int n, Possibilities *p){
 
 	return index;
 }
-*/
+
 //selects a variable to assign a color
-int selectUnassignedVariable(int *vector, int n, Possibilities *p, HEURISTIC flag){
+int selectUnassignedVariable(Graph *graph, int *vector, int n, Possibilities *p, HEURISTIC flag){
 	int i;
 
 	//if we are using MRV heuristic, let it select the state to color
-//	if(flag >= MRV)
-//		return minimumRemainingValues(vector, n, p);
+	if(flag >= MRV)
+		return minimumRemainingValues(graph, vector, n, p, flag);
 
 	//otherwise just return the next available state
 	for(i = 0; i < n; i++){
@@ -94,6 +105,7 @@ int forwardChecking(Graph *graph, int *states, int color, int vertex, Possibilit
     ListNode *current = graph -> vector[vertex] -> head -> next;
     int *vector = NULL;
 
+    //vector to keep all the possibilities values changed
     vector = (int *) calloc(graph -> size, sizeof(int));
 
     current = graph -> vector[vertex] -> head -> next;
@@ -101,7 +113,8 @@ int forwardChecking(Graph *graph, int *states, int color, int vertex, Possibilit
  	//decrement the possibilities of colors for each adjacent state to the state we are coloring
     while(current != NULL){
 
-    	if(states[current -> dest] == 1 && !hasRestriction(p[current -> dest].colors, color)){
+    	//if the adjacent state doesn't already have a restriction to the color "color", add the restriction
+    	if(!hasRestriction(p[current -> dest].colors, color)){
     		vector[current -> dest] = 1;
         	p[current -> dest].colors[color] = 1;
         	p[current -> dest].size--;
@@ -128,7 +141,7 @@ int evaluateValue(Graph *graph, int *states, int color, int vertex, Possibilitie
 	ListNode *current = graph -> vector[vertex] -> head -> next;
 
 	//state doesn't have any boundaries
-	//falta corrigir, não ta pegando
+	//falta corrigir, não ta pegando (?)
 	if(current == NULL)
 		return TRUE;
 
@@ -142,59 +155,83 @@ int evaluateValue(Graph *graph, int *states, int color, int vertex, Possibilitie
 		current = current -> next;
 	}
 
-	//if we are using forward checking, use it before returning to the recursion
+	//if we are using forward checking, let it decide to return either TRUE of FALSE
  	if(flag >= FORWARD_CHECKING)
  		return forwardChecking(graph, states, color, vertex, p);
 
+ 	//color is ok for this state
 	return TRUE;
 }
 
+//assigns a color to a stata
 void addValue(int *vector, int vertex, int color){
 	vector[vertex] = color;
 }
 
+//removes a color assigned to a state
 void removeValue(int size, int *states, int vertex, int color, Possibilities *p, HEURISTIC flag){
 	states[vertex] = -1;
 
+	//if using forward checking, remake the possibilities array
 	if(flag >= FORWARD_CHECKING)
    		remakePossibilities(p, p[vertex].restrictions, color, size);
 }
 
 int _backtracking(Graph *graph, int *states, Possibilities *p, HEURISTIC flag){
+	//gets out of the backtracking if the color assignment is complete
 	if(assignmentComplete(states, graph -> size))
 		return TRUE;	
 
 	int i;
-	int result;
-	int vertex = selectUnassignedVariable(states, graph -> size, p, flag);
+	//selects a statae with no color assigned
+	int vertex = selectUnassignedVariable(graph, states, graph -> size, p, flag);
 
+	//for each color available to paint
 	for(i = 0; i < COLORS; i++){
 
+		//checks if the restrictions are ok for painting this state with the color i
 		if(evaluateValue(graph, states, i, vertex, p, flag)){
+			//if yes, add the color to the states colors array
 			addValue(states, vertex, i);
 
-			result = _backtracking(graph, states, p, flag);
-
-			if(result){
+			//do the same for another state
+			if(_backtracking(graph, states, p, flag))
 				return TRUE;
-			}
 
+			//if some state called from the recursive function above couldn't be painted,
+			//remove the state painted before it, and try to paint it with another color
 			removeValue(graph -> size, states, vertex, i, p, flag);
 		}
 	}
 
+	//couldn't find a color to paint the current state, return and try a different color to the state painted before
 	return FALSE;
 }
 
-void initializePossibilities(Possibilities **p, int size){
+//initializes a vector of "possibilities" for each state
+void initializePossibilities(Graph *graph, Possibilities **p, HEURISTIC flag){
 	int i;
 
-	(*p) = (Possibilities *) malloc(sizeof(Possibilities) * size);
+	(*p) = (Possibilities *) malloc(sizeof(Possibilities) * graph -> size);
 
-	for(i = 0; i < size; i++){
+	for(i = 0; i < graph -> size; i++){
+		(*p)[i].index = i;
+		(*p)[i].restrictions = (int *) calloc(graph -> size, sizeof(int));
 		(*p)[i].colors = (int *) calloc(COLORS, sizeof(int));
-		(*p)[i].restrictions = (int *) calloc(size, sizeof(int));
 		(*p)[i].size = 4;
+		(*p)[i].degree = 0;
+	}
+
+	//initialize all vertex degrees
+	if(flag >= ORDER){
+		for(i = 0; i < graph -> size; i++){
+			ListNode *current = graph -> vector[i] -> head -> next;
+
+			while(current != NULL){
+				(*p)[i].degree++;
+				current = current -> next;
+			}
+		}
 	}
 }	
 
@@ -202,17 +239,19 @@ int backtracking(Graph *graph, int **states, HEURISTIC flag){
     Possibilities *aux = NULL;
     int result;
     
+    //setting up vector to keep the color assigned to the states
     (*states) = (int *) malloc(sizeof(int) * graph -> size);
     memset((*states), -1, graph -> size * sizeof(int));
 
+    //initialize other auxiliar variables if doing forward checking
     if(flag >= FORWARD_CHECKING)
-    	initializePossibilities(&aux, graph -> size);
+    	initializePossibilities(graph, &aux, flag);
     
     result = _backtracking(graph, (*states), aux, flag);
- 
- 	if(aux){
+ 	
+ 	if(flag >= FORWARD_CHECKING)
     	freePossibilities(aux, graph -> size);
- 	}
+ 	
  
     return result;
 }

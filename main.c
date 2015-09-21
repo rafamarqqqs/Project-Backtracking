@@ -37,7 +37,7 @@ void initialize(Map **map, Graph **graph){
 
 	scanf("%d", &((*map) -> size));
 
-	(*graph) = createGraph('D', (*map) -> size, 0);
+	(*graph) = createGraph((*map) -> size);
 
 	readMap((*map));
 	printMap((*map));
@@ -56,7 +56,7 @@ int main(int argc, char *argv[]){
 	printGraph(graph);
 
 	start = clock();
-	backtracking(graph, &vector, FORWARD_CHECKING);
+	backtracking(graph, &vector, ORDER);
 	end = clock();
 
 	printVector(vector, map, graph -> size);

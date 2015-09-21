@@ -19,33 +19,23 @@ int addEdge(Graph *graph, int src, int dest, int weight){
 
 	addListNode(graph -> vector[src], src, dest, weight, NULL);
 
-	if(!(graph -> is_digraph))
-		addListNode(graph -> vector[dest], dest, src, weight, NULL);
-
 	return 1;
 }
 
-Graph* createGraph(int is_digraph, int vertex, int edges){
-	    if(vertex <= 0 || edges < 0)
-			return NULL;
+Graph* createGraph(int vertex){
+	if(vertex <= 0)
+		return NULL;
 
-	    int i;
-	    int src, dest, weight;
+	int i;
 
-	    Graph *newGraph = (Graph *) malloc(sizeof(Graph));
-	    newGraph -> vector = (List **) malloc(sizeof(List*) * vertex);
-	    newGraph -> size = vertex;
-	    newGraph -> is_digraph = is_digraph;
+	Graph *newGraph = (Graph *) malloc(sizeof(Graph));
+	newGraph -> vector = (List **) malloc(sizeof(List*) * vertex);
+	newGraph -> size = vertex;
 
-	    for(i = 0; i < vertex; i++)
-	    	newGraph -> vector[i] = createList();
+    for(i = 0; i < vertex; i++)
+	   	newGraph -> vector[i] = createList();
 
-	    for(i = 0; i < edges; i++){
-	    	scanf("%d %d %d", &src, &dest, &weight);
-	    	addEdge(newGraph, src, dest, weight);
-	    }
-
-     return newGraph;
+    return newGraph;
 }
 
 int printGraph(Graph *graph){
@@ -74,16 +64,4 @@ void freeGraph(Graph **graph){
 	free((*graph) -> vector);
 	free(*graph);
 	*graph = NULL;
-}
-
-int removeEdge(Graph *graph, int src, int dest){
-	if(!graph)
-		return -1;
-
-	removeListNode(graph -> vector[src], dest);
-
-	if(!graph -> is_digraph)
-		removeListNode(graph -> vector[dest], src);
-
-	return 1;
 }

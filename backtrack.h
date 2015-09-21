@@ -19,8 +19,10 @@
 
 typedef struct possibilities {
 	int *colors;
-	int size;
 	int *restrictions;
+	int size;
+	int index;
+	int degree;
 } Possibilities;
  
 typedef unsigned int HEURISTIC;
