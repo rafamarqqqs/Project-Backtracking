@@ -8,15 +8,18 @@ import java.io.FileWriter;
 public class createMaps {
 	private static LinkedList<State> states = new LinkedList<State>();
 	private static int size;
+	private static int ajdacents;
 
 	public static void main(String[] args) {
 
-		if(args.length < 1){
-			System.out.println("Usage: createMaps <amount of states>");
+		if(args.length < 2){
+			System.out.println("Usage: createMaps <amount of states> <max ajdacent states>");
 			return;
 		}
 		
+
 		size = Integer.parseInt(args[0]);
+		ajdacents = Integer.parseInt(args[1]) - 1;
 		
 		if(size <= 0){
 			System.out.println("Number of states must be greater than 0.");
@@ -33,7 +36,7 @@ public class createMaps {
 				states.add(new State(new Integer(i).toString()));
 
 			for(State s : states){
-				int adjNumber = rand.nextInt(size/10) + 1;
+				int adjNumber = rand.nextInt(ajdacents) + 1;
 
 				for(int j = 0; j < adjNumber; j++){
 					State aux = getState(s);

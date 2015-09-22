@@ -142,7 +142,6 @@ int evaluateValue(Graph *graph, int *states, int color, int vertex, Possibilitie
 	ListNode *current = graph -> vector[vertex] -> head -> next;
 
 	//state doesn't have any boundaries
-	//falta corrigir, não ta pegando (?)
 	if(current == NULL)
 		return TRUE;
 
@@ -178,7 +177,7 @@ void removeValue(int size, int *states, int vertex, int color, Possibilities *p,
    		remakePossibilities(p, p[vertex].restrictions, color, size);
 }
 
-int _backtracking(Graph *graph, int *states, Possibilities *p, HEURISTIC flag){
+int _backtracking(Graph *graph, int *states, Possibilities *p, HEURISTIC flag, int *assignments){
 	//gets out of the backtracking if the color assignment is complete
 	if(assignmentComplete(states, graph -> size))
 		return TRUE;	
@@ -194,9 +193,10 @@ int _backtracking(Graph *graph, int *states, Possibilities *p, HEURISTIC flag){
 		if(evaluateValue(graph, states, i, vertex, p, flag)){
 			//if yes, add the color to the states colors array
 			addValue(states, vertex, i);
+			(*assignments)++;
 
 			//do the same for another state
-			if(_backtracking(graph, states, p, flag))
+			if(_backtracking(graph, states, p, flag, assignments))
 				return TRUE;
 
 			//if some state called from the recursive function above couldn't be painted,
@@ -238,7 +238,7 @@ void initializePossibilities(Graph *graph, Possibilities **p, HEURISTIC flag){
 
 int backtracking(Graph *graph, int **states, HEURISTIC flag){
     Possibilities *aux = NULL;
-    int result;
+    int assignments;
     
     //setting up vector to keep the color assigned to the states
     (*states) = (int *) malloc(sizeof(int) * graph -> size);
@@ -248,11 +248,10 @@ int backtracking(Graph *graph, int **states, HEURISTIC flag){
     if(flag >= FORWARD_CHECKING)
     	initializePossibilities(graph, &aux, flag);
     
-    result = _backtracking(graph, (*states), aux, flag);
+    _backtracking(graph, (*states), aux, flag, &assignments);
  	
  	if(flag >= FORWARD_CHECKING)
     	freePossibilities(aux, graph -> size);
- 	
  
-    return result;
+    return assignments;
 }

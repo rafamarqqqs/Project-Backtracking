@@ -48,20 +48,20 @@ int main(int argc, char *argv[]){
 
 	Graph *graph;
 	int *vector = NULL;
+	int assignments;
 	Map *map;
 	clock_t start, end;
 
 	initialize(&map, &graph);
 
-	printGraph(graph);
-
 	start = clock();
-	backtracking(graph, &vector, ORDER);
+	assignments = backtracking(graph, &vector, ORDER);
 	end = clock();
 
 	printVector(vector, map, graph -> size);
 
 	printf("Time consumed: %lf\n", (double) (end - start)/CLOCKS_PER_SEC);
+	printf("Assignments made: %d\n", assignments);
 
 	//FUNÇÃO SÓ PRA TESTAR OS RESULTADOS NAO ESQUECER DE TIRAR ELA DEPOIS 
 	checkResult(graph, vector);
