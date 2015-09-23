@@ -3,17 +3,24 @@
 #include <stdlib.h>
 #include "backtrack.h"
 
-//checks if the assignment is complete
-int assignmentComplete(int *vector, int n){
-	int i;
+#define ASSIGNMENT_COMPLETE(a, b) (a == b)
 
-	for(i = 0; i < n; i++){
-		if(vector[i] == -1)
-			return FALSE;
-	}
+//checks if the state already has the restriction to the color assigned or not
+#define HAS_RESTRICTION(colors, color) (colors[color] != 0 ? TRUE : FALSE)
 
-	return TRUE;
-}
+//assigns a color to a stata
+#define ADD_VALUE(vector, index, value) (vector[index] = value)
+
+
+//removes a color assigned to a state
+#define REMOVE_VALUE(size, states, vertex, color, p, flag) ({                \
+	states[vertex] = -1;                                                    \
+    /* if using forwad checking,                                            \
+     * remake the possibilities for the                                     \
+     * adjacent states */                                                   \
+	if(flag >= FORWARD_CHECKING)                                            \
+   		remakePossibilities(p, p[vertex].restrictions, color, size);        \
+})
 
 //compare function to compare the possibilities struct
 int compareMRV(const void *a, const void *b){
@@ -74,11 +81,6 @@ int selectUnassignedVariable(Graph *graph, int *vector, int n, Possibilities *p,
 	return i;	
 }
 
-//checks if the state already has the restriction to the color assigned or not
-int hasRestriction(int *colors, int color){
-	return colors[color] != 0 ? TRUE : FALSE;
-}
-
 void freePossibilities(Possibilities *p, int size){
 	int i;
 
@@ -115,7 +117,7 @@ int forwardChecking(Graph *graph, int *states, int color, int vertex, Possibilit
     while(current != NULL){
 
     	//if the adjacent state doesn't already have a restriction to the color "color", add the restriction
-    	if(!hasRestriction(p[current -> dest].colors, color)){
+    	if(HAS_RESTRICTION(p[current -> dest].colors, color)){
     		vector[current -> dest] = 1;
         	p[current -> dest].colors[color] = 1;
         	p[current -> dest].size--;
@@ -132,6 +134,7 @@ int forwardChecking(Graph *graph, int *states, int color, int vertex, Possibilit
     }
 
     memcpy(p[vertex].restrictions, vector, sizeof(int) * graph -> size);
+   
     free(vector);
  	
     return TRUE;
@@ -148,7 +151,7 @@ int evaluateValue(Graph *graph, int *states, int color, int vertex, Possibilitie
 	//checks if the state can be painted with the color i
 	//see if there any edge with color equals i
 	while(current != NULL){
-		//if the adjacent state has the same color, return false
+		//if adjacent state has the same color, return false
 		if(states[current -> dest] == color)
 			return FALSE;
 
@@ -163,23 +166,9 @@ int evaluateValue(Graph *graph, int *states, int color, int vertex, Possibilitie
 	return TRUE;
 }
 
-//assigns a color to a stata
-void addValue(int *vector, int vertex, int color){
-	vector[vertex] = color;
-}
-
-//removes a color assigned to a state
-void removeValue(int size, int *states, int vertex, int color, Possibilities *p, HEURISTIC flag){
-	states[vertex] = -1;
-
-	//if using forward checking, remake the possibilities array
-	if(flag >= FORWARD_CHECKING)
-   		remakePossibilities(p, p[vertex].restrictions, color, size);
-}
-
-int _backtracking(Graph *graph, int *states, Possibilities *p, HEURISTIC flag, int *assignments){
+int _backtracking(Graph *graph, int *states, Possibilities *p, HEURISTIC flag, int *assignments, int coloredStates){
 	//gets out of the backtracking if the color assignment is complete
-	if(assignmentComplete(states, graph -> size))
+    if(ASSIGNMENT_COMPLETE(coloredStates, graph -> size))
 		return TRUE;	
 
 	int i;
@@ -192,16 +181,17 @@ int _backtracking(Graph *graph, int *states, Possibilities *p, HEURISTIC flag, i
 		//checks if the restrictions are ok for painting this state with the color i
 		if(evaluateValue(graph, states, i, vertex, p, flag)){
 			//if yes, add the color to the states colors array
-			addValue(states, vertex, i);
-			(*assignments)++;
+			ADD_VALUE(states, vertex, i);
+
+            (*assignments)++;
 
 			//do the same for another state
-			if(_backtracking(graph, states, p, flag, assignments))
+			if(_backtracking(graph, states, p, flag, assignments, coloredStates + 1))
 				return TRUE;
 
 			//if some state called from the recursive function above couldn't be painted,
 			//remove the state painted before it, and try to paint it with another color
-			removeValue(graph -> size, states, vertex, i, p, flag);
+			REMOVE_VALUE(graph -> size, states, vertex, i, p, flag);
 		}
 	}
 
@@ -248,7 +238,7 @@ int backtracking(Graph *graph, int **states, HEURISTIC flag){
     if(flag >= FORWARD_CHECKING)
     	initializePossibilities(graph, &aux, flag);
     
-    _backtracking(graph, (*states), aux, flag, &assignments);
+    _backtracking(graph, (*states), aux, flag, &assignments, 0);
  	
  	if(flag >= FORWARD_CHECKING)
     	freePossibilities(aux, graph -> size);
