@@ -36,7 +36,7 @@ int compareOrder(const void *a, const void *b){
 }
 
 //minimum remaining values heuristic
-int minimumRemainingValues(Graph *graph, int *vector, int n, Possibilities *p, HEURISTIC flag){
+int minimumRemainingValues(int *vector, int n, Possibilities *p, HEURISTIC flag){
 	Possibilities *aux = (Possibilities *) malloc(sizeof(Possibilities) * n);
 	int index;
 	int i;
@@ -44,7 +44,6 @@ int minimumRemainingValues(Graph *graph, int *vector, int n, Possibilities *p, H
 
 	//copy all data from p to aux and sort it
 	memcpy(aux, p, sizeof(Possibilities) * n);
-
 	//if using order to determinate to choose between equal possibilities states
 	if(flag >= ORDER)
 		compare = &compareOrder;
@@ -65,12 +64,12 @@ int minimumRemainingValues(Graph *graph, int *vector, int n, Possibilities *p, H
 }
 
 //selects a variable to assign a color
-int selectUnassignedVariable(Graph *graph, int *vector, int n, Possibilities *p, HEURISTIC flag){
+int selectUnassignedVariable(int *vector, int n, Possibilities *p, HEURISTIC flag){
 	int i;
 
 	//if we are using MRV heuristic, let it select the state to color
 	if(flag >= MRV)
-		return minimumRemainingValues(graph, vector, n, p, flag);
+		return minimumRemainingValues(vector, n, p, flag);
 
 	//otherwise just return the next available state
 	for(i = 0; i < n; i++){
@@ -117,7 +116,7 @@ int forwardChecking(Graph *graph, int *states, int color, int vertex, Possibilit
     while(current != NULL){
 
     	//if the adjacent state doesn't already have a restriction to the color "color", add the restriction
-    	if(HAS_RESTRICTION(p[current -> dest].colors, color)){
+    	if(!HAS_RESTRICTION(p[current -> dest].colors, color)){
     		vector[current -> dest] = 1;
         	p[current -> dest].colors[color] = 1;
         	p[current -> dest].size--;
@@ -167,13 +166,14 @@ int evaluateValue(Graph *graph, int *states, int color, int vertex, Possibilitie
 }
 
 int _backtracking(Graph *graph, int *states, Possibilities *p, HEURISTIC flag, int *assignments, int coloredStates){
-	//gets out of the backtracking if the color assignment is complete
+
+    //gets out of the backtracking if the color assignment is complete
     if(ASSIGNMENT_COMPLETE(coloredStates, graph -> size))
 		return TRUE;	
 
 	int i;
 	//selects a statae with no color assigned
-	int vertex = selectUnassignedVariable(graph, states, graph -> size, p, flag);
+	int vertex = selectUnassignedVariable(states, graph -> size, p, flag);
 
 	//for each color available to paint
 	for(i = 0; i < COLORS; i++){
@@ -210,13 +210,14 @@ void initializePossibilities(Graph *graph, Possibilities **p, HEURISTIC flag){
 		(*p)[i].restrictions = (int *) calloc(graph -> size, sizeof(int));
 		(*p)[i].colors = (int *) calloc(COLORS, sizeof(int));
 		(*p)[i].size = 4;
-		(*p)[i].degree = 0;
 	}
 
 	//initialize all vertex degrees
 	if(flag >= ORDER){
 		for(i = 0; i < graph -> size; i++){
-			ListNode *current = graph -> vector[i] -> head -> next;
+		    (*p)[i].degree = 0;
+		
+            ListNode *current = graph -> vector[i] -> head -> next;
 
 			while(current != NULL){
 				(*p)[i].degree++;
