@@ -97,7 +97,7 @@ void remakePossibilities(Possibilities *p, int *vector, int color, int size){
 	for(i = 0; i < size; i++){
 		if(vector[i] != 0){
 			p[i].colors[color] = 0;
-			p[i].size--;
+			p[i].size++;
 		}
 	}
 }
@@ -123,7 +123,7 @@ int forwardChecking(Graph *graph, int *states, int color, int vertex, Possibilit
     	}
 		
 		//if someone receives a 0 possibility, cancel the assignment operation
-	    if(states[current -> dest] != -1 && p[current -> dest].size == 0) {
+	    if(p[current -> dest].size == 0) {
 	    	remakePossibilities(p, vector, color, graph -> size);
     		free(vector);
 	        return FALSE;
@@ -209,7 +209,7 @@ void initializePossibilities(Graph *graph, Possibilities **p, HEURISTIC flag){
 		(*p)[i].index = i;
 		(*p)[i].restrictions = (int *) calloc(graph -> size, sizeof(int));
 		(*p)[i].colors = (int *) calloc(COLORS, sizeof(int));
-		(*p)[i].size = 4;
+		(*p)[i].size = COLORS;
 	}
 
 	//initialize all vertex degrees
