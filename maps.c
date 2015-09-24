@@ -29,7 +29,7 @@ void readAdjacents(State *state, int n){
 
 	state -> adjacents = (char **) malloc(sizeof(char*));
 	state -> adjacents[state -> size] = NULL;
-	
+
 	while((aux = getchar()), aux != '.'){
 		state -> adjacents[state -> size] = realloc(state -> adjacents[state -> size], sizeof(char) * (size + 1));
 
@@ -52,7 +52,8 @@ void readAdjacents(State *state, int n){
 		state -> adjacents[state -> size][size - 1] = '\0';
 		state -> size++;
 	}
-	//reads the '\n'
+
+    //reads the '\n'
 	getchar();
 }
 
@@ -61,10 +62,7 @@ void readMap(Map *map){
 
 	map -> states = (State **) malloc(sizeof(State *) * (map -> size));
 	
-	//reads the '\n'
-	getchar();
-
-	for(i = 0; i < map -> size; i++){
+    for(i = 0; i < map -> size; i++){
 		map -> states[i] = (State *) malloc(sizeof(State));
 		map -> states[i] -> name = readState();
 		map -> states[i] -> size = 0;

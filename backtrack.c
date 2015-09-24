@@ -184,7 +184,7 @@ int _backtracking(Graph *graph, int *states, Possibilities *p, HEURISTIC flag, i
 			ADD_VALUE(states, vertex, i);
 
             (*assignments)++;
-
+            
 			//do the same for another state
 			if(_backtracking(graph, states, p, flag, assignments, coloredStates + 1))
 				return TRUE;

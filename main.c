@@ -35,12 +35,11 @@ void checkResult(Graph *graph, int *vector){
 void initialize(Map **map, Graph **graph){
 	(*map) = (Map *) malloc(sizeof(Map));
 
-	scanf("%d", &((*map) -> size));
+	scanf("%d\n", &((*map) -> size));
 
 	(*graph) = createGraph((*map) -> size);
 
 	readMap((*map));
-	printMap((*map));
 	transformMap((*map), (*graph));
 }
 
@@ -55,13 +54,13 @@ int main(int argc, char *argv[]){
 	initialize(&map, &graph);
 
 	start = clock();
-	assignments = backtracking(graph, &vector, ORDER);
+	assignments = backtracking(graph, &vector, atoi(argv[1]));
 	end = clock();
 
-	printVector(vector, map, graph -> size);
-
-	printf("Time consumed: %lf\n", (double) (end - start)/CLOCKS_PER_SEC);
-	printf("Assignments made: %d\n", assignments);
+	//printVector(vector, map, graph -> size);
+    printf("Heuristic %d\n", atoi(argv[1]));
+    printf("Time consumed: %lf\n", (double) (end - start)/CLOCKS_PER_SEC);
+	printf("Assignments made: %d\n\n", assignments);
 
 	//FUNÇÃO SÓ PRA TESTAR OS RESULTADOS NAO ESQUECER DE TIRAR ELA DEPOIS 
 	checkResult(graph, vector);
