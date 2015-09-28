@@ -1,0 +1,42 @@
+41 a
+Portugal: Spain.
+Spain: Andorra, France, Portugal.
+Andorra: France, Spain.
+France: Andorra, Belgium, Germany, Italy, Luxembourg, Monaco, Spain, Switzerland.
+Belgium: France, Germany, Luxembourg, Netherlands.
+Germany: Austria, Belgium, Czech Republic, Denmark, France, Luxembourg, Netherlands, Poland, Switzerland.
+Italy: Austria, France, San Marino, Slovenia, Switzerland.
+Luxembourg: Belgium, France, Germany.
+Monaco: France.
+Switzerland: Austria, France, Germany, Italy, Liechtenstein.
+Netherlands: Belgium, Germany.
+Austria: Czech Republic, Germany, Hungary, Italy, Liechtenstein, Slovakia, Slovenia, Switzerland.
+Czech Republic: Austria, Poland, Germany, Slovakia.
+Denmark: Germany.
+Poland: Belarus, Czech Republic, Germany, Lithuania, Russia, Slovakia, Ukraine.
+San Marino: Italy.
+Slovenia: Austria, Croatia, Hungary, Italy.
+Liechtenstein: Austria, Switzerland.
+Hungary: Austria, Croatia, Romania, Serbia, Slovakia, Slovenia, Ukraine.
+Slovakia: Austria, Czech Republic, Hungary, Poland, Ukraine.
+Belarus: Latvia, Lithuania, Poland, Russia, Ukraine.
+Lithuania: Belarus, Latvia, Poland, Russia.
+Russia: Belarus, Estonia, Finland, Georgia, Latvia, Lithuania, Norway, Poland, Ukraine.
+Ukraine: Belarus, Hungary, Moldova, Poland, Romania, Russia, Slovakia.
+Croatia: Bosnia, Hungary, Montenegro, Serbia, Slovenia.
+Romania: Bulgaria, Hungary, Moldova, Serbia, Ukraine.
+Serbia: Bosnia, Bulgaria, Croatia, Hungary, Kosovo, Macedonia, Montenegro, Romania.
+Latvia: Belarus, Estonia, Lithuania, Russia.
+Estonia: Latvia, Russia.
+Finland: Norway, Russia, Sweden.
+Georgia: Russia.
+Norway: Finland, Russia, Sweden.
+Moldova: Romania, Ukraine.
+Bosnia: Croatia, Montenegro, Serbia.
+Montenegro: Albania, Bosnia, Croatia, Kosovo, Serbia.
+Bulgaria: Greece, Macedonia, Romania, Serbia.
+Macedonia: Albania, Bulgaria, Greece, Kosovo, Serbia.
+Sweden: Finland, Norway.
+Albania: Greece, Kosovo, Macedonia, Montenegro.
+Kosovo: Albania, Macedonia, Montenegro, Serbia.
+Greece: Albania, Bulgaria, Macedonia.
